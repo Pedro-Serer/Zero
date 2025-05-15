@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/74cfb4d0-5d15-4d15-b1f0-56b2c47adfdc" alt="logo_zero" />
+  <img src="https://www.pedroserer.com.br/logo_zero.png" alt="logo_zero" />
 </p>
 
 <br>
