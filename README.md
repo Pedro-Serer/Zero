@@ -7,41 +7,49 @@
 
 # Zero 🧠🚀
 
-**Zero** é uma arquitetura de software minimalista, modular e extremamente simplificada. Pensada para ser compreendida rapidamente e dar agilidade total ao desenvolvimento, ela é baseada em um fluxo claro e controlado, sem camadas desnecessárias. Sem mágica. Sem enrolação. Só o essencial, organizado. Ela foi desenvolvida e amplamente testada em ambientes WEB com o PHP no Back-End em conjunto com outras tecnologias para o Front-end.
+**Zero** é uma arquitetura de software minimalista, modular e extremamente simples. Foi pensada para ser compreendida em minutos e dar agilidade total ao desenvolvimento. O fluxo é direto, controlado, e sem camadas inúteis.  
+Sem mágica. Sem gambiarra. Só o essencial, tudo organizado e funcional.
+
+Desenvolvida e testada extensivamente em ambientes web com PHP no back-end, a arquitetura é compatível com qualquer linguagem ou stack que respeite o fluxo de dados.
+
+Antes de vir para o lado negro da força, leia atentamente o manifesto, para compreender melhor a motivação dessa arquitetura.
 
 <br>
 
 # 🌀 Filosofia
 
-A base da filosofia da arquitetura **Zero** é a simplicidade, reusabilidade, e alta performance. Quanto menos frameworks, melhor.
-Os dados são os personagens principais dessa história, pois todo o fluxo da arquitetura se baseiam exclusivamente no modo como a aplicação recebe, processa e apresenta os dados.
+A filosofia da arquitetura **Zero** é baseada em três pilares: simplicidade, reusabilidade e performance. Quanto menos dependências externas, melhor.
 
-O fluxo de dados funciona da seguinte forma: **CRUD → CLASSES → CONTROLLERS → VIEWS/API**.
+Aqui, os dados são os protagonistas. Todo o fluxo da aplicação gira em torno de como os dados entram, são processados e saem. Nada além disso.
+
+A lógica é simples: praticamente todo processo empresarial ou problema real pode ser modelado como um CRUD. A computação resolve problemas porque abstrai esses processos. Então, se tudo é um CRUD, **a solução pode (e deve) ser simples**.
+
+O fluxo de dados funciona da seguinte forma: **CRUD → INTERFACE → CONTROLLERS → VIEWS/API**.
 
 <ul>
-  <li><p><b>CRUD: </b> todas as funcionalidades na arquitetura <b>Zero</b> são CRUD's e podem ser estendidos com funcionalidades extras desde que não extrapolem as responsabilidades do arquivo.</p></li>
-  <li><p><b>CLASSES: </b> todas as classes são interfaces, que podem ser estendidas além do CRUD. Elas devem conter implementações de conexão e recuperação dos dados do BD.</p></li>
-  <li><p><b>CONTROLLERS: </b> os controllers capturam os dados das interfaces, tratam e enviam para as views/api</p></li>
-  <li><p><b>VIEWS/API: </b> todas as views/api's são exclusivamente e unicamente a saída do sistema</p></li>
+  <li><p><b>CRUD: </b> Cada funcionalidade nasce como um CRUD básico. Pode crescer, mas sem virar um monstro. Nada de violar responsabilidade do arquivo.</p></li>
+  <li><p><b>CLASSES: </b> São as classes que lidam diretamente com o BD. Isoladas, focadas. Um CRUD por classe. Se precisar, você estende.</p></li>
+  <li><p><b>CONTROLLERS: </b> Capturam os dados das interfaces, aplicam regras de negócio e preparam a saída.</p></li>
+  <li><p><b>VIEWS/API: </b> Aqui termina o ciclo. É só a apresentação: seja para humanos (HTML) ou máquinas (JSON, XML, etc). Nada de lógica aqui.</p></li>
 </ul>
 
 <br>
 
 ## 📁 Estrutura de Pastas
 /assets     → Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos<br>
-/classes    → Apenas interfaces de CRUD por funcionalidade <br>
-/controller → Implementações que usam os métodos das classes e alimentam APIs ou views <br>
-/webhooks   → Pasta para recebimento de hooks de outros sistemas ou API's <br>
+/interface  → Interfaces de CRUD (1 por funcionalidade) <br>
+/controller → Regras de negócio e orquestração de dados (consome interface)<br>
+/receiver   → Pasta para recebimento de hooks de outros sistemas ou API's <br>
 /api        → Endpoints públicos ou internos da aplicação (REST, JSON, etc). <br>
 /screens    → Para views em apps mobile ou desktop <br>
-/utils      → Classes utilitárias (tratamento de erros, queries, regras de negócio) <br>
-(root)      → Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web <br>
+/utils      → Classes utilitárias (tratamento de erros, queries, constantes) <br>
+/ (root)    → Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web <br>
 
 <br>
 
 ## 🧩 Componentes da Arquitetura
 
-### 🔹 Classes (`/classes`)
+### 🔹 Interface (`/interface`)
 - Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) tem **sua interface CRUD** separada.
 - Essas interfaces definem os métodos esperados para qualquer tipo de operação com o banco.
 - São independentes da linguagem. Em TypeScript, Dart, Java... seguem o mesmo princípio.
