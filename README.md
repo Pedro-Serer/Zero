@@ -86,15 +86,22 @@ PASTAS      | DESCRIÇÃO
   
   - ### 🔹 Screens (`/screens`)
     - Contém as telas para aplicações **DESKTOP** ou **MOBILE**:
-    - Deverá conter apenas as classes responsáveis pela apresentação dos dados para o usuário.
-    - Para esse modelo, deverá ter um arquivo chamado "app" na raiz, que chamará a tela principal do sistema.
+      - Deverá conter apenas as classes responsáveis pela apresentação dos dados para o usuário.
+      - Para esse modelo, deverá ter um arquivo chamado "app" na raiz, que chamará a tela principal do sistema.
    
 ### 🛠️ miscellaneous
 
-- As pastas abaixo são **obrigatórias** e podem ser usadas tanto para o backend como para o frontend:
+- As pastas abaixo são opcionais e podem ser usadas tanto para o backend como para o frontend:
 
-
-
+  - ### 🔹 ASSETS (`/assets`)
+    - Contém ativos estáticos do sistema como imagens, gifs, vídeos e etc.
+    - Cada arquivo estático deverá estar contido dentro de uma subpasta com o nome a qual eles representam.
+    - Arquivos CSS e JS também estarão dentro dessa pasta, é possível organizar o JS em classes de acordo com suas funcionalidades.
+  
+  - ### 🔹 ROOT (`/`)
+    - Se for um app **MOBILE** ou **DESKTOP**, então o único arquivo na raiz deverá se chamar "app", seguido da extensão da linguagem.
+    - Deverá conter apenas arquivos HTML (views) do sistema.
+    - O HTML tem que ser o mais puro possível evitando CSS inline, PHP, JAVA, etc.
 
 <br>
 
