@@ -36,33 +36,65 @@ O fluxo de dados funciona da seguinte forma: **CRUD → INTERFACE → CONTROLLER
 <br>
 
 ## 📁 Estrutura de Pastas
-/assets     → Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos<br>
-/interface  → Interfaces de CRUD (1 por funcionalidade) <br>
-/controller → Regras de negócio e orquestração de dados (consome interface)<br>
-/receiver   → Pasta para recebimento de hooks de outros sistemas ou API's <br>
-/api        → Endpoints públicos ou internos da aplicação (REST, JSON, etc). <br>
-/screens    → Para views em apps mobile ou desktop <br>
-/utils      → Classes utilitárias (tratamento de erros, queries, constantes) <br>
-/ (root)    → Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web <br>
+
+PASTAS      | DESCRIÇÃO
+----------- | -----------
+/assets     | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
+/interface  | Interfaces de CRUD (1 por funcionalidade)
+/controller | Regras de negócio e orquestração de dados (consome interface)
+/receiver   | Pasta para recebimento de hooks de outros sistemas ou API's
+/api        | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
+/screens    | Para views em apps mobile ou desktop
+/utils      | Classes utilitárias (tratamento de erros, queries, constantes)
+/ (root)    | Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web
 
 <br>
 
 ## 🧩 Componentes da Arquitetura
 
-### 🔹 Interface (`/interface`)
-- Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) tem **sua interface CRUD** separada.
-- Essas interfaces definem os métodos esperados para qualquer tipo de operação com o banco.
-- São independentes da linguagem. Em TypeScript, Dart, Java... seguem o mesmo princípio.
+### 🛠️ Backend (Core da Lógica de Negócio)
 
-### 🔹 Controllers (`/controller`)
-- Cada interface tem um controller correspondente.
-- Ele **implementa** as chamadas para o banco via classe e alimenta **views ou APIs**.
-- Exemplo: `UserController` chama `UserCRUD` e envia dados para o front ou resposta de API.
+- As pastas abaixo são **obrigatórias** e formam o núcleo do backend na arquitetura **Zero**:
 
-### 🔹 Utils (`/utils`)
-- `ErrorHandler` → Classe abstrata que padroniza erros e mensagens de exceção.
-- `QueryProvider` → Armazena queries SQL como **constantes** ou **variáveis dinâmicas**, dependendo da linguagem.
-- `LogicHelper` → Funções para regra de negócio, máscaras, segurança, etc. (máx. ~10 funções).
+  - ### 🔹 Interface (`/interface`)
+    - Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) tem **sua interface CRUD** separada.
+    - Essas interfaces definem os métodos esperados para qualquer tipo de operação com o banco.
+    - São independentes da linguagem. Em TypeScript, Dart, Java... seguem o mesmo princípio.
+  
+  - ### 🔹 Controllers (`/controller`)
+    - Cada interface tem um controller correspondente.
+    - Ele **implementa** as chamadas para o banco via classe e alimenta **views ou APIs**.
+    - Exemplo: `UserController` chama `UserCRUD` e envia dados para o front ou resposta de API.
+  
+  - ### 🔹 Utils (`/utils`)
+    - Contém utilitários centrais que apoiam toda a camada de backend:
+      - `ErrorHandler` → Classe abstrata que padroniza erros e mensagens de exceção.
+      - `QueryProvider` → Armazena queries SQL como **constantes** ou **variáveis dinâmicas**, dependendo da linguagem.
+      - `LogicHelper` → Funções para regra de negócio, máscaras, segurança, etc. (máx. ~10 funções).
+
+- As pastas abaixo são opcionais, devem ser incrementadas somente se necessário:
+  
+  - ### 🔹 Receiver (`/receiver`)
+    - Arquivos de logs de webhook.
+    - Arquivo de logs de recebimento de dados de API's.
+    - Arquivo de logs de sockets de redes ou qualquer outro tipo de comunicação de recebimento de dados.
+  
+  - ### 🔹 API (`/api`)
+    - Contém as API's de cada funcionalidade separadas em pastas com o nome da funcionalidade.
+    - Dentro das subpastas deverá ter a implemetação do arquivo de rotas e um de endpoint.
+    - os arquivos de rotas devem começar com o nome "rotas- {nome_arquivo}" e os arquivos de api, "api- {nome_arquivo}"
+  
+  - ### 🔹 Screens (`/screens`)
+    - Contém as telas para aplicações **DESKTOP** ou **MOBILE**:
+    - Deverá conter apenas as classes responsáveis pela apresentação dos dados para o usuário.
+    - Para esse modelo, deverá ter um arquivo chamado "app" na raiz, que chamará a tela principal do sistema.
+   
+### 🛠️ miscellaneous
+
+- As pastas abaixo são **obrigatórias** e podem ser usadas tanto para o backend como para o frontend:
+
+
+
 
 <br>
 
