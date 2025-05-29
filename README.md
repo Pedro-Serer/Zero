@@ -37,16 +37,19 @@ O fluxo de dados funciona da seguinte forma: **CRUD → INTERFACE → CONTROLLER
 
 ## 📁 Estrutura de Pastas
 
-PASTAS      | DESCRIÇÃO
------------ | -----------
-/assets     | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
-/interface  | Interfaces de CRUD (1 por funcionalidade)
-/controller | Regras de negócio e orquestração de dados (consome interface)
-/receiver   | Pasta para recebimento de hooks de outros sistemas ou API's
-/api        | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
-/screens    | Para views em apps mobile ou desktop
-/utils      | Classes utilitárias (tratamento de erros, queries, constantes)
-/ (root)    | Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web
+PASTAS          | DESCRIÇÃO
+----------------|------------
+/src            | Pasta contentendo serviços e entidades communs ao projeto, podem ser usados nos controllers, receiver, api, screens e etc.
+/src/services   | Pasta destinada a serviços como consumo de API de terceiros, serviços de email, serviços de pagamento como abstração de gatesways e etc.
+/src/entities   | Interfaces e modelos de CRUD (1 por funcionalidade)
+/src/utils      | Classes utilitárias (tratamento de erros, queries, constantes)
+/controllers    | Regras de negócio e orquestração de dados (consome interface)
+/receiver       | Pasta para recebimento de hooks de outros sistemas ou API's
+/assets         | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
+/api            | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
+/screens        | Para views em apps mobile ou desktop
+/utils          | Classes utilitárias (tratamento de erros, queries, constantes)
+/(root)         | Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web
 
 <br>
 
@@ -144,36 +147,42 @@ Imagine que você tem um sistema web que processa pagamentos, então a estrutura
 
 ```shell
 .
+├── src
+│   ├── entities
+│   │   ├── Bd.php
+│   │   ├── Usuarios.php
+│   │   ├── Pagamentos.php
+│   │   └── Csv.php
+│   ├── utils
+│   │   ├── erros.php
+│   │   ├── funcoes.php
+│   │   └── queries.php
+│   └── services
+│       └── gateways
+│           ├── PargameGateway.php
+│           ├── PagSeguroGateway.php
+│           └── MercadoPagoGateway.php
 ├── assets
-│   └── _css
-│   └── _imagens
-│   └── _javascript
-├── classes
-│   └── interface-bd.php
-│   └── interface-usuarios.php
-│   └── interface-pagamentos.php
-│   └── interface-csv.php
+│   ├── css
+│   ├── imagens
+│   └── javascript
 ├── controller
-│   └── controller-usuarios.php
-│   └── controller-pagamentos.php
-│   └── controller-csv.php
-├── utils
-│   └── erros.php
-│   └── funcoes.php
-│   └── queries.php
+│   ├── ControllerUsuarios.php
+│   ├── ControllerPagamentos.php
+│   └── ControllerCsv.php
 ├── api
 │   └── pagamentos
-│       └── rotas-pagamentos.php
+│       ├── RotasPagamentos.php
 │       └── api-pagamentos.php
 ├── login.html
 ├── dashboard-pagamentos.html
 
 ```
 
-### Interface interface-pagamentos.php
+### Entity Pagamentos.php
 
 ```php
-require_once 'interface-bd.php';
+require_once 'Bd.php';
 require_once '../utils/queries.php';
 
 /**
@@ -259,7 +268,7 @@ class Pagamentos implements PagamentosInterface {
 
 ---
 
-### controller-pagamentos.php
+### ControllerPagamentos.php
 
 ```php
 
@@ -276,7 +285,7 @@ require_once '../utils/funcoes.php';
  * Arquivo que define os métodos para a lógica de pagamentos.
  */
 
-class PagamentosController
+class ControllerPagamentos
 {
 
     private Pagamentos $pagamentos;
@@ -374,7 +383,7 @@ class PagamentosController
 
 ---
 
-### rotas-pagamentos.php
+### RotasPagamentos.php
 
 ```php
 <?php
@@ -390,7 +399,7 @@ class PagamentosController
      * Arquivo com os métodos de processamento HTTP.
      */
 
-    class PagamentosRotas 
+    class RotasPagamentos 
     {
         private PagamentosController $pagamentosController;
     
@@ -455,7 +464,7 @@ class PagamentosController
 
 ```php
 <?php
-    require_once 'rotas-pagamentos.php';
+    require_once 'RotasPagamentos.php';
 
     /**
      * @author Pedro Stein Serer
