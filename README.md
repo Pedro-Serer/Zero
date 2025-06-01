@@ -24,11 +24,11 @@ Aqui, os dados são os protagonistas. Todo o fluxo da aplicação gira em torno 
 
 A lógica é simples: praticamente todo processo empresarial ou problema real pode ser modelado como um CRUD. A computação resolve problemas porque abstrai esses processos. Então, se tudo é um CRUD, **a solução pode (e deve) ser simples**.
 
-O fluxo de dados funciona da seguinte forma: **CRUD → CONTRATO → WORKERS → VIEWS/API**.
+O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS → VIEWS/API**.
 
 <ul>
   <li><p><b>CRUD: </b> Cada funcionalidade nasce como um CRUD básico. Pode crescer, mas sem virar um monstro. Nada de violar responsabilidade do arquivo.</p></li>
-  <li><p><b>CLASSES: </b> São as classes que lidam diretamente com o BD. Isoladas, focadas. Um CRUD por classe. Se precisar, você estende.</p></li>
+  <li><p><b>CONTRACTS: </b> São as classes que lidam diretamente com o BD. Isoladas, focadas. Um CRUD por contrato. Se precisar, você estende.</p></li>
   <li><p><b>WORKERS: </b> Capturam os dados dos contratos, aplicam regras de negócio e preparam a saída.</p></li>
   <li><p><b>VIEWS/API: </b> Aqui termina o ciclo. É só a apresentação: seja para humanos (HTML) ou máquinas (JSON, XML, etc). Nada de lógica aqui.</p></li>
 </ul>
