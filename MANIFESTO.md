@@ -25,8 +25,8 @@ A performance e o controle estão no código que você entende, não no que outr
 
 Cada camada tem uma função clara:
 
-* `interface`: pega do banco.
-* `controller`: aplica regra.
+* `contracts`: pega do banco.
+* `workers`: aplica regra.
 * `view/api`: mostra o resultado.
 
 Nada de misturar. Cada um no seu quadrado.
@@ -36,7 +36,7 @@ Nada de misturar. Cada um no seu quadrado.
 ### 4. **Views são burras**
 
 Views não pensam. Elas só mostram.
-Toda a lógica deve estar antes — e quem manda na lógica são os controllers.
+Toda a lógica deve estar antes — e quem manda na lógica são os workers.
 
 ---
 
