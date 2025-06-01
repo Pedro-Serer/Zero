@@ -39,11 +39,11 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 PASTAS          | DESCRIÇÃO
 ----------------|------------
+/assets         | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
 /contracts      | Contratos de CRUD (1 por funcionalidade)
 /utils          | Classes utilitárias (tratamento de erros, queries, constantes)
 /workers        | Regras de negócio e orquestração de dados (consome contrato)
 /receiver       | Pasta para recebimento de hooks de outros sistemas ou API's
-/assets         | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
 /api            | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
 /screens        | Para views em apps mobile ou desktop
 /utils          | Classes utilitárias (tratamento de erros, queries, constantes)
