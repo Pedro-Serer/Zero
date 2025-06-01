@@ -24,12 +24,12 @@ Aqui, os dados são os protagonistas. Todo o fluxo da aplicação gira em torno 
 
 A lógica é simples: praticamente todo processo empresarial ou problema real pode ser modelado como um CRUD. A computação resolve problemas porque abstrai esses processos. Então, se tudo é um CRUD, **a solução pode (e deve) ser simples**.
 
-O fluxo de dados funciona da seguinte forma: **CRUD → CONTRATO → CONTROLLERS → VIEWS/API**.
+O fluxo de dados funciona da seguinte forma: **CRUD → CONTRATO → WORKERS → VIEWS/API**.
 
 <ul>
   <li><p><b>CRUD: </b> Cada funcionalidade nasce como um CRUD básico. Pode crescer, mas sem virar um monstro. Nada de violar responsabilidade do arquivo.</p></li>
   <li><p><b>CLASSES: </b> São as classes que lidam diretamente com o BD. Isoladas, focadas. Um CRUD por classe. Se precisar, você estende.</p></li>
-  <li><p><b>CONTROLLERS: </b> Capturam os dados das contratos, aplicam regras de negócio e preparam a saída.</p></li>
+  <li><p><b>WORKERS: </b> Capturam os dados dos contratos, aplicam regras de negócio e preparam a saída.</p></li>
   <li><p><b>VIEWS/API: </b> Aqui termina o ciclo. É só a apresentação: seja para humanos (HTML) ou máquinas (JSON, XML, etc). Nada de lógica aqui.</p></li>
 </ul>
 
@@ -39,10 +39,9 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRATO → CONTROLLERS
 
 PASTAS          | DESCRIÇÃO
 ----------------|------------
-/services       | Pasta destinada a serviços como consumo de API de terceiros, serviços de email, serviços de pagamento como abstração de gatesways e etc.
 /contracts      | Contratos de CRUD (1 por funcionalidade)
 /utils          | Classes utilitárias (tratamento de erros, queries, constantes)
-/controllers    | Regras de negócio e orquestração de dados (consome contrato)
+/workers        | Regras de negócio e orquestração de dados (consome contrato)
 /receiver       | Pasta para recebimento de hooks de outros sistemas ou API's
 /assets         | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
 /api            | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
@@ -68,16 +67,11 @@ PASTAS          | DESCRIÇÃO
       - `ErrorHandler` → Classe abstrata que padroniza erros e mensagens de exceção.
       - `QueryProvider` → Armazena queries SQL como **constantes** ou **variáveis dinâmicas**, dependendo da linguagem.
       - `LogicHelper` → Funções para regra de negócio, máscaras, segurança, etc. (máx. ~10 funções).
-  
-  - ### 🔹 Services (`/services`)
-    - Contém serviços que consomem APIs de terceiros ou serviços externos:
-      - Exemplo: `PaymentGateway` para integração com gateways de pagamento.
-      - Cada serviço deve ser modular e reutilizável, podendo ser chamado por controllers ou outras partes do sistema.
-  
-  - ### 🔹 Controllers (`/controller`)
-    - Cada contrato tem um controller correspondente.
+
+  - ### 🔹 Workers (`/worker`)
+    - Cada contrato tem um worker correspondente.
     - Ele **implementa** as chamadas para o banco via classe e alimenta **views ou APIs**.
-    - Exemplo: `UserController` chama `UserCRUD` e envia dados para o front ou resposta de API.
+    - Exemplo: `UserWorker` chama `UserCRUD` e envia dados para o front ou resposta de API.
 
 - As pastas abaixo são opcionais, devem ser incrementadas somente se necessário:
   
@@ -125,7 +119,7 @@ Essa arquitetura suporta sistemas mais complexos, que contenham pedidos, estoque
 - Notificações é um CRUD;
 - Suporte é também um CRUD.
 
-Basicamente qualquer coisa é um CRUD, sendo que cada funcionalidade vai ter um contrato (CRUD), um controller com os métodos que asseguram o funcionamento correto do sistema, uma classe de rotas e seu próprio endpoint. Se for necessário atomicidade, então cabe o desenvolvedor escolher qual arquivo será responsável por controlar a atomicidade, por exemplo, imagine o seguinte fluxo: **CRIAR PEDIDOS → DISPARAR FATURAMENTO → ATUALIZAR O ESTOQUE → GERAR COMISSÃO PARA O VENDEDOR → ENVIAR UM EMAIL**.
+Basicamente qualquer coisa é um CRUD, sendo que cada funcionalidade vai ter um contrato (CRUD), um  com os métodos que asseguram o funcionamento correto do sistema, uma classe de rotas e seu próprio endpoint. Se for necessário atomicidade, então cabe o desenvolvedor escolher qual arquivo será responsável por controlar a atomicidade, por exemplo, imagine o seguinte fluxo: **CRIAR PEDIDOS → DISPARAR FATURAMENTO → ATUALIZAR O ESTOQUE → GERAR COMISSÃO PARA O VENDEDOR → ENVIAR UM EMAIL**.
 
 Se for necessário dar um rollback, é possível fazer de várias maneiras simples, sendo uma, que o sistema só valida tudo no final de todas as etapas, num arquivo que envia o email. Então o sistema cria o pedido e o insere no banco, que não teria problema se o pedido não fosse concluído já basta ter uma flag nesse pedido, sendo bom até para análises de marketing. Se ele conseguir atualizar o estoque, ele dispara o faturamento e se tudo ocorrer bem com o diparo, ele gera a comissão e envia o email.
 
@@ -152,41 +146,36 @@ Imagine que você tem um sistema web que processa pagamentos, então a estrutura
 ```shell
 .
 
-├── contracts
-│   ├── Bd.php
-│   ├── Usuarios.php
-│   ├── Pagamentos.php
-│   └── Csv.php
-├── utils
-│   ├── erros.php
-│   ├── funcoes.php
-│   └── queries.php
-└── services
-    └── gateways
-        ├── PargameGateway.php
-        ├── PagSeguroGateway.php
-        └── MercadoPagoGateway.php
 ├── assets
-│   ├── css
-│   ├── imagens
-│   └── javascript
-├── controller
-│   ├── ControllerUsuarios.php
-│   ├── ControllerPagamentos.php
-│   └── ControllerCsv.php
+│   └── _css
+│   └── _imagens
+│   └── _javascript
+├── contracts
+│   └── contracts-bd.php
+│   └── contracts-usuarios.php
+│   └── contracts-pagamentos.php
+│   └── contracts-csv.php
+├── worker
+│   └── worker-usuarios.php
+│   └── worker-pagamentos.php
+│   └── worker-csv.php
+├── utils
+│   └── erros.php
+│   └── funcoes.php
+│   └── queries.php
 ├── api
 │   └── pagamentos
-│       ├── RotasPagamentos.php
+│       └── rotas-pagamentos.php
 │       └── api-pagamentos.php
 ├── login.html
 ├── dashboard-pagamentos.html
 
 ```
 
-### Entity Pagamentos.php
+### Contracts Pagamentos.php
 
 ```php
-require_once 'Bd.php';
+require_once 'contracts-bd.php';
 require_once '../utils/queries.php';
 
 /**
@@ -207,12 +196,12 @@ interface PagamentosInterface {
 }
 
 class Pagamentos implements PagamentosInterface {
-    private Bd $bancoDeDados;
+    private BD $bancoDeDados;
 
     // Inicia a classe com uma conexão com o banco de dados.
     function __construct()
     {
-        $this->bancoDeDados = new Bd;
+        $this->bancoDeDados = new BD;
     }
 
     /**
@@ -272,11 +261,11 @@ class Pagamentos implements PagamentosInterface {
 
 ---
 
-### ControllerPagamentos.php
+### WorkerPagamentos.php
 
 ```php
 
-require_once '../classes/Pagamentos.php';
+require_once '../classes/contracts-pagamentos.php';
 require_once '../utils/funcoes.php';
 
 /**
@@ -289,7 +278,7 @@ require_once '../utils/funcoes.php';
  * Arquivo que define os métodos para a lógica de pagamentos.
  */
 
-class ControllerPagamentos
+class WorkerPagamentos
 {
 
     private Pagamentos $pagamentos;
@@ -387,11 +376,11 @@ class ControllerPagamentos
 
 ---
 
-### RotasPagamentos.php
+### rotas-pagamentos.php
 
 ```php
 <?php
-    require_once 'controller-pagamentos.php';
+    require_once 'worker-pagamentos.php';
 
     /**
      * @author Pedro Stein Serer
@@ -405,10 +394,10 @@ class ControllerPagamentos
 
     class RotasPagamentos 
     {
-        private PagamentosController $pagamentosController;
+        private PagamentosWorker $pagamentosWorker;
     
         public function __construct() {
-            $this->pagamentosController = new PagamentosController;
+            $this->pagamentosWorker = new PagamentosWorker;
         }
 
         /**
@@ -468,7 +457,7 @@ class ControllerPagamentos
 
 ```php
 <?php
-    require_once 'RotasPagamentos.php';
+    require_once 'rotas-pagamentos.php';
 
     /**
      * @author Pedro Stein Serer
