@@ -134,7 +134,7 @@ Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulo ou 
 ├──── utils
 │     └── pagamentos-utils.php
 ├──── api
-│     └── rotas-pagamentos.api.php
+│     └── rotas-pagamentos.php
 ├──── dashboard-pagamentos.html
 
 ```
