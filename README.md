@@ -117,7 +117,7 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 ## 🗃  Zero modular
 
-Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulo ou domínios e aplicar Zero em cada um deles.
+Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulos ou domínios e aplicar Zero em cada um deles.
 
 <br>
 
