@@ -115,7 +115,7 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 <br>
 
-## &#x1F5C4;  Zero modular
+## 🗃  Zero modular
 
 Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulo ou domínios e aplicar Zero em cada um deles.
 
