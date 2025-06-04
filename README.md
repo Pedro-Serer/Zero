@@ -117,7 +117,11 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 ## 🗃 Zero modular
 
-Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulos ou domínios e aplicar Zero em cada um deles.
+Zero consegue se adaptar a uma arquitetura modular: basta criar seus módulos ou domínios e aplicar o Zero em cada um deles. Com isso,
+além da facilidade e simplicidade que o Zero oferece no desenvolvimento do sistema, a arquitetura modular melhora a escalabilidade, a
+manutenibilidade e a reutilização — permitindo, por exemplo, que cada módulo se torne um microserviço, caso necessário. Além disso,
+cada desenvolvedor, ou times de squads diferentes, pode trabalhar paralelamente em módulos específicos de seu interesse, sem afetar o
+sistema como um todo e sem conflitos entre si.
 
 <br>
 
