@@ -115,7 +115,7 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 <br>
 
-## 🗃  Zero modular
+## 🗃 Zero modular
 
 Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulos ou domínios e aplicar Zero em cada um deles.
 
@@ -124,18 +124,24 @@ Zero consegue se adaptar a uma arquitetura modular, basta criar seus módulos ou
 ```shell
 .
 (root)
+├── usuarios
+├──── assets
+├──── contracts
+├──── worker
+├──── utils
+├──── api
 ├── pagamentos
 ├──── assets
-│     └── _imagens
 ├──── contracts
-│     └── pagamentos-contracts.php
 ├──── worker
-│     └── pagamentos-worker.php
 ├──── utils
-│     └── pagamentos-utils.php
 ├──── api
-│     └── rotas-pagamentos.php
-├──── dashboard-pagamentos.html
+├── relatorios
+├──── assets
+├──── contracts
+├──── worker
+├──── utils
+├──── api
 
 ```
 
