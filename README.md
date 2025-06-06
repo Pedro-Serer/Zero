@@ -57,42 +57,133 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 - As pastas abaixo são **obrigatórias** e formam o núcleo do backend na arquitetura **Zero**:
 
-  - ### 🔹 Contracts (`/contracts`)
+  - ### 🔹 Contracts (/contracts)
+    
+    Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) deve ter seu contrato CRUD separado.
+    
+    Esses contratos definem claramente os métodos esperados para qualquer operação com o banco de dados, garantindo que todas as implementações sigam um padrão único e previsível.
+    
+    **Boas práticas para contracts:**
+    
+    - Defina interfaces claras, com assinaturas e tipos bem especificados para facilitar implementação e manutenção.
+    - Inclua regras básicas de validação nos contratos, como tipos e formatos esperados.
+    - Documente cada método com descrições, parâmetros e tipos de retorno (ex: PHPDoc, JSDoc).
+    - Mantenha os contratos independentes da linguagem ou framework, para garantir portabilidade e reuso.
+    - Use os contratos como contrato firme entre a camada de dados e as regras de negócio — isso evita acoplamento e facilita testes.
+    
+    Essa estrutura ajuda a garantir que toda operação de leitura, escrita, atualização e exclusão no banco siga um padrão único, tornando o sistema mais previsível, legível e fácil de escalar.
 
-    - Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) tem **sua contrato CRUD** separada.
-    - Esses contratos definem os métodos esperados para qualquer tipo de operação com o banco.
-    - São independentes da linguagem. Em TypeScript, Dart, Java... seguem o mesmo princípio.
 
   - ### 🔹 Utils (`/utils`)
 
-    - Contém utilitários centrais que apoiam toda a camada de backend:
-      - `ErrorHandler` → Classe abstrata que padroniza erros e mensagens de exceção.
-      - `QueryProvider` → Armazena queries SQL como **constantes** ou **variáveis dinâmicas**, dependendo da linguagem.
-      - `LogicHelper` → Funções para regra de negócio, máscaras, segurança, etc. (máx. ~10 funções).
+    - Pasta dedicada à centralização de funções reutilizáveis, helpers, constantes e utilitários que dão suporte transversal a todo o backend.
+    - Componentes essenciais a incluir:
+      - **Classe de tratamento unificado de erros** (`ErrorHandler`):  
+        - Padroniza a captura, registro e retorno de erros, facilitando o debug e a manutenção.  
+        - Garante mensagens claras e consistentes para toda a aplicação.
+      - **Funções de sanitização e validação genérica:**  
+        - Métodos para limpar e validar dados de entrada, protegendo contra ataques comuns (ex: SQL Injection, XSS).  
+        - Garantem que os dados estejam corretos e seguros antes de serem processados.
+      - **Helpers e constantes:**  
+        - Funções auxiliares para formatação, manipulação de dados e regras simples que são utilizadas em diversos pontos do sistema.  
+        - Constantes configuráveis que evitam hardcoding e facilitam alterações globais.
+    - **Documentação clara e objetiva:**  
+      - Cada utilitário deve ser bem documentado para que qualquer desenvolvedor entenda rapidamente sua função e uso.  
+      - Isso facilita a manutenção, o onboard de novos devs e reduz a duplicação de código.
+    - A pasta `/utils` é o coração do backend reutilizável, promovendo organização, segurança e consistência em todo o projeto.
 
-  - ### 🔹 Workers (`/worker`)
-    - Cada contrato tem um worker correspondente.
-    - Ele **implementa** as chamadas para o banco via classe e alimenta **views ou APIs**.
-    - Exemplo: `UserWorker` chama `UserCRUD` e envia dados para o front ou resposta de API.
+
+  - ### 🔹 Workers (/worker)
+  
+    Cada contrato tem um worker correspondente.
+    
+    O worker é responsável por **implementar as chamadas ao banco de dados** através dos contratos, além de aplicar as regras de negócio e orquestrar os dados que serão enviados para as views ou APIs.
+    
+    **Boas práticas para workers:**
+    
+    - Mantenha a lógica de negócio concentrada nos workers — as views devem ser “burras” e apenas exibir dados.
+    - Use os workers para validar, transformar e processar os dados antes de enviá-los para o front-end ou APIs.
+    - Implemente o consumo dos contratos CRUD para garantir consistência no acesso aos dados.
+    - Separe a lógica de integração com outros sistemas, se necessário, utilizando os workers para orquestrar esses fluxos.
+    - Documente claramente cada método para facilitar manutenção e testes.
+    
+    Exemplo prático: `UserWorker` utiliza o `UserCRUD` (definido no contrato) para buscar usuários, aplicar regras como filtros ou permissões, e finalmente enviar os dados para o front-end ou responder a uma requisição API.
+    
+    Essa separação torna o sistema mais modular, fácil de entender e de escalar, mantendo a responsabilidade única para cada componente.
+
 
 - As pastas abaixo são opcionais, devem ser incrementadas somente se necessário:
-
+  
   - ### 🔹 Receiver (`/receiver`)
+  
+    - Pasta responsável por **centralizar a entrada de dados externos** no sistema, incluindo integrações via:
+      - Webhooks
+      - APIs de terceiros
+      - Sockets de rede
+      - Qualquer outro tipo de comunicação externa
+    
+    - **Função principal:**  
+      - **Filtrar, validar e autenticar** tudo que vem de fora **antes** de permitir qualquer ação no core do sistema.
+    
+    - **Boas práticas:**
+      - **Delegar a lógica de negócio para os Workers:**  
+        - Os scripts em `/receiver` devem ser simples e focados em segurança e roteamento.  
+        - Após validação, encaminham os dados para o worker responsável processar corretamente.
+      - **Registrar logs detalhados:**  
+        - Toda requisição recebida deve ser registrada com dados como:
+          - Payload original
+          - Timestamp
+          - IP e headers
+          - Status do processamento
+        - Isso garante rastreabilidade e facilita o diagnóstico em caso de falha ou ataque.
+      - **Segurança em primeiro lugar:**  
+        - Verificar assinaturas, tokens ou chaves de autenticação antes de qualquer execução.
+        - Rejeitar silenciosamente entradas inválidas ou suspeitas.
+    
+    - O `/receiver` atua como **guarda de fronteira** do sistema: tudo passa por aqui, nada entra sem ser verificado.
 
-    - Arquivos de logs de webhook.
-    - Arquivo de logs de recebimento de dados de API's.
-    - Arquivo de logs de sockets de redes ou qualquer outro tipo de comunicação de recebimento de dados.
 
   - ### 🔹 API (`/api`)
+  
+    - Contém as APIs de cada funcionalidade organizadas em subpastas nomeadas conforme a funcionalidade (ex: `pagamentos`, `usuarios`, `relatorios`).
+    - Cada subpasta deve conter dois arquivos principais:
+      - **Arquivo de rotas:** Responsável por definir as rotas/endpoints da API. Deve começar com o prefixo `rotas-` seguido do nome da funcionalidade.  
+        *Exemplo:* `rotas-pagamentos.php`
+      - **Arquivo do endpoint:** Implementa a lógica que responde às requisições das rotas definidas. Deve começar com o prefixo `api-` seguido do nome da funcionalidade.  
+        *Exemplo:* `api-pagamentos.php`
+    - Essa separação deixa claro onde as rotas são definidas e onde a lógica das respostas está implementada, facilitando manutenção e extensão.
+    - As APIs são responsáveis por receber requisições, validar dados, chamar os workers para executar regras de negócio e retornar as respostas formatadas (ex: JSON).
+    - Esta camada não deve conter regras de negócio complexas, apenas coordenação e comunicação entre o front-end e o backend.
 
-    - Contém as API's de cada funcionalidade separadas em pastas com o nome da funcionalidade.
-    - Dentro das subpastas deverá ter a implemetação do arquivo de rotas e um de endpoint.
-    - os arquivos de rotas devem começar com o nome "rotas- {nome_arquivo}" e os arquivos de api, "api- {nome_arquivo}"
 
   - ### 🔹 Screens (`/screens`)
-    - Contém as telas para aplicações **DESKTOP** ou **MOBILE**:
-      - Deverá conter apenas as classes responsáveis pela apresentação dos dados para o usuário.
-      - Para esse modelo, deverá ter um arquivo chamado "app" na raiz, que chamará a tela principal do sistema.
+  
+    - Responsável por conter as telas de aplicações **DESKTOP** ou **MOBILE**.
+    - Cada arquivo representa uma tela ou componente de exibição isolado.
+    - A raiz da pasta deve conter um arquivo `app` que funciona como ponto de entrada da interface, chamando a tela principal do sistema.
+    
+    - #### 🧠 Filosofia:
+      - **Views são burras** — elas apenas mostram dados e capturam ações do usuário.
+      - Nenhuma regra de negócio deve ser implementada aqui.
+      
+    - #### 🛠️ Boas práticas:
+    
+      - **Exibição pura:**
+        - Os arquivos em `/screens` devem se limitar à camada visual.
+        - Estilização, componentes de UI, e navegação entre telas podem ser controlados aqui.
+      
+      - **API First:**
+        - Toda comunicação com o backend deve ser feita via **chamadas assíncronas** para as rotas da API (`/api`).
+        - A tela nunca deve acessar diretamente contratos ou workers.
+      
+      - **Validação leve:**
+        - Inputs podem ser validados localmente para melhorar a UX (ex: campos obrigatórios, formatos de e-mail).
+        - Mas **toda validação real e regra de segurança** deve ser feita no backend (worker).
+      
+      - **Organização clara:**
+        - Nomes dos arquivos e pastas devem refletir claramente o propósito da tela (ex: `TelaLogin`, `DashboardPagamentos`, `ResumoFatura`).
+
+
 
 ### 🛠️ miscellaneous
 
@@ -103,6 +194,11 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
     - Contém ativos estáticos do sistema como imagens, gifs, vídeos e etc.
     - Cada arquivo estático deverá estar contido dentro de uma subpasta com o nome a qual eles representam.
     - Arquivos CSS e JS também estarão dentro dessa pasta, é possível organizar o JS em classes de acordo com suas funcionalidades.
+
+    - **Detalhes**:
+      - 🔁 As **views** e os **assets** formam juntos a camada de apresentação.  
+      - 🔒 Eles **nunca acessam o banco diretamente** — recebem dados prontos da API.  
+      - 📐 Simples, previsível e escalável.
 
   - ### 🔹 ROOT (`/`)
     - Se for um app **MOBILE** ou **DESKTOP**, então o único arquivo na raiz deverá se chamar "app", seguido da extensão da linguagem.
