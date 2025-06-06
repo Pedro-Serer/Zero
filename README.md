@@ -37,17 +37,17 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 ## 📁 Estrutura de Pastas
 
-PASTAS          | DESCRIÇÃO
-----------------|------------
-/assets         | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos
-/contracts      | Contratos de CRUD (1 por funcionalidade)
-/utils          | Classes utilitárias (tratamento de erros, queries, constantes)
-/workers        | Regras de negócio e orquestração de dados (consome contrato)
-/receiver       | Pasta para recebimento de hooks de outros sistemas ou API's
-/api            | Endpoints públicos ou internos da aplicação (REST, JSON, etc).
-/screens        | Para views em apps mobile ou desktop
-/utils          | Classes utilitárias (tratamento de erros, queries, constantes)
-/(root)         | Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web
+| PASTAS     | DESCRIÇÃO                                                                              |
+| ---------- | -------------------------------------------------------------------------------------- |
+| /assets    | Arquivos de view (JS/CSS/HTML) em apps web e documentos estáticos como imagens, vídeos |
+| /contracts | Contratos de CRUD (1 por funcionalidade)                                               |
+| /utils     | Classes utilitárias (tratamento de erros, queries, constantes)                         |
+| /workers   | Regras de negócio e orquestração de dados (consome contrato)                           |
+| /receiver  | Pasta para recebimento de hooks de outros sistemas ou API's                            |
+| /api       | Endpoints públicos ou internos da aplicação (REST, JSON, etc).                         |
+| /screens   | Para views em apps mobile ou desktop                                                   |
+| /utils     | Classes utilitárias (tratamento de erros, queries, constantes)                         |
+| /(root)    | Apenas a view principal (mobile e desktop), ou um conjunto de views no caso da web     |
 
 <br>
 
@@ -58,11 +58,13 @@ PASTAS          | DESCRIÇÃO
 - As pastas abaixo são **obrigatórias** e formam o núcleo do backend na arquitetura **Zero**:
 
   - ### 🔹 Contracts (`/contracts`)
+
     - Cada funcionalidade do sistema (ex: Usuário, Produto, Pedido) tem **sua contrato CRUD** separada.
     - Esses contratos definem os métodos esperados para qualquer tipo de operação com o banco.
     - São independentes da linguagem. Em TypeScript, Dart, Java... seguem o mesmo princípio.
 
   - ### 🔹 Utils (`/utils`)
+
     - Contém utilitários centrais que apoiam toda a camada de backend:
       - `ErrorHandler` → Classe abstrata que padroniza erros e mensagens de exceção.
       - `QueryProvider` → Armazena queries SQL como **constantes** ou **variáveis dinâmicas**, dependendo da linguagem.
@@ -74,31 +76,34 @@ PASTAS          | DESCRIÇÃO
     - Exemplo: `UserWorker` chama `UserCRUD` e envia dados para o front ou resposta de API.
 
 - As pastas abaixo são opcionais, devem ser incrementadas somente se necessário:
-  
+
   - ### 🔹 Receiver (`/receiver`)
+
     - Arquivos de logs de webhook.
     - Arquivo de logs de recebimento de dados de API's.
     - Arquivo de logs de sockets de redes ou qualquer outro tipo de comunicação de recebimento de dados.
-  
+
   - ### 🔹 API (`/api`)
+
     - Contém as API's de cada funcionalidade separadas em pastas com o nome da funcionalidade.
     - Dentro das subpastas deverá ter a implemetação do arquivo de rotas e um de endpoint.
     - os arquivos de rotas devem começar com o nome "rotas- {nome_arquivo}" e os arquivos de api, "api- {nome_arquivo}"
-  
+
   - ### 🔹 Screens (`/screens`)
     - Contém as telas para aplicações **DESKTOP** ou **MOBILE**:
       - Deverá conter apenas as classes responsáveis pela apresentação dos dados para o usuário.
       - Para esse modelo, deverá ter um arquivo chamado "app" na raiz, que chamará a tela principal do sistema.
-   
+
 ### 🛠️ miscellaneous
 
 - As pastas abaixo são opcionais e podem ser usadas tanto para o backend como para o frontend:
 
   - ### 🔹 ASSETS (`/assets`)
+
     - Contém ativos estáticos do sistema como imagens, gifs, vídeos e etc.
     - Cada arquivo estático deverá estar contido dentro de uma subpasta com o nome a qual eles representam.
     - Arquivos CSS e JS também estarão dentro dessa pasta, é possível organizar o JS em classes de acordo com suas funcionalidades.
-  
+
   - ### 🔹 ROOT (`/`)
     - Se for um app **MOBILE** ou **DESKTOP**, então o único arquivo na raiz deverá se chamar "app", seguido da extensão da linguagem.
     - Deverá conter apenas arquivos HTML (views) do sistema.
@@ -107,6 +112,50 @@ PASTAS          | DESCRIÇÃO
 <br>
 
 > ⚠️ **NÃO É OBRIGATÓRIO USAR TODAS AS PASTAS EM SEU PROJETO, USE SOMENTE SE PRECISAR**
+
+<br>
+
+## 🗃 Zero modular
+
+Outra grande habilidade da arquitetura Zero é ser modular, pois basta criar módulos (ou domínios) e aplicar o Zero dentro de 
+cada um deles. Isso é perfeito para sistemas grandes e complexos, porque além de organizar, separar as reponsabilidades, ela
+dá bastante flexibilidade e simplicidade de compreensão. Isso melhora a escalabilidade e uma futura manutenção. 
+
+A Zero modular pode ser reutilizada em qualquer outra parte do projeto, permitindo também, que cada módulo se torne um microserviço, 
+se necessário.
+
+A Zero modular, permite que desenvolvedores ou times de squads diferentes possam trabalhar paralelamente em
+módulos específicos de seu interesse, sem afetar o sistema como um todo e sem conflitos entre si, que é essencial para o desenvolvimento 
+moderno e em conjunto de modelos de IA.
+
+```shell
+.
+
+(root)
+├── Usuarios/
+│   └── contracts/                     # Cria o CRUD das operações básicas de usuários
+│   └── worker/                        # Aplica as regras de gestão de usuários
+│   └── utils/                         # Utilitários exclusivos para a gestão de usuários
+│   └── api/                           # Faz chama dos recuros de Pagamentos e Relatórios
+│   └── receiver/                      # Recebe as solicitações de Pagamentos e Relatórios
+├── Pagamentos/
+│   └── contracts/                     # Cria o CRUD das operações básicas de pagamentos
+│   └── worker/                        # Implementação da regra de negócios para os pagamentos
+│   └── utils/                         # Utilitários exclusivos para o setor de pagamentos
+│   └── api/                           # Fornece os recursos de Pagamentos para o Usuário
+│   └── receiver/                      # Recebe chamadas de API e WebHook para alimentar o sistema
+├── Relatórios/
+│   └── contracts/                     # Cria o CRUD das operações básicas de relatórios
+│   └── worker/                        # Implementa os contratos para alimentar a API
+│   └── utils/                         # Utilitários exclusivos para montar os relatórios
+│   └── api/                           # Chamam os recursos para gerar relatórios
+├── Frontend/
+│   └── assets/                        # Arquivos e estilos para alimentar o front-end
+│   ├── usuários.html                  # Página de Usuários
+│   ├── pagamentos.html                # Página de Pagamentos
+├── app.html                           # Arquivo base do sistema
+
+```
 
 <br>
 
@@ -119,7 +168,7 @@ Essa arquitetura suporta sistemas mais complexos, que contenham pedidos, estoque
 - Notificações é um CRUD;
 - Suporte é também um CRUD.
 
-Basicamente qualquer coisa é um CRUD, sendo que cada funcionalidade vai ter um contrato (CRUD), um  com os métodos que asseguram o funcionamento correto do sistema, uma classe de rotas e seu próprio endpoint. Se for necessário atomicidade, então cabe o desenvolvedor escolher qual arquivo será responsável por controlar a atomicidade, por exemplo, imagine o seguinte fluxo: **CRIAR PEDIDOS → DISPARAR FATURAMENTO → ATUALIZAR O ESTOQUE → GERAR COMISSÃO PARA O VENDEDOR → ENVIAR UM EMAIL**.
+Basicamente qualquer coisa é um CRUD, sendo que cada funcionalidade vai ter um contrato (CRUD), um com os métodos que asseguram o funcionamento correto do sistema, uma classe de rotas e seu próprio endpoint. Se for necessário atomicidade, então cabe o desenvolvedor escolher qual arquivo será responsável por controlar a atomicidade, por exemplo, imagine o seguinte fluxo: **CRIAR PEDIDOS → DISPARAR FATURAMENTO → ATUALIZAR O ESTOQUE → GERAR COMISSÃO PARA O VENDEDOR → ENVIAR UM EMAIL**.
 
 Se for necessário dar um rollback, é possível fazer de várias maneiras simples, sendo uma, que o sistema só valida tudo no final de todas as etapas, num arquivo que envia o email. Então o sistema cria o pedido e o insere no banco, que não teria problema se o pedido não fosse concluído já basta ter uma flag nesse pedido, sendo bom até para análises de marketing. Se ele conseguir atualizar o estoque, ele dispara o faturamento e se tudo ocorrer bem com o diparo, ele gera a comissão e envia o email.
 
@@ -181,10 +230,10 @@ require_once '../utils/queries.php';
 /**
  * @author Pedro Stein Serer
  * (14/05/2025)
- * 
+ *
  * @version 1.0.1
  * @copyright Empresa Exemplo
- * 
+ *
  * Arquivo de definição das operações de pagamentos.
  */
 
@@ -206,9 +255,9 @@ class Pagamentos implements PagamentosInterface {
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -219,9 +268,9 @@ class Pagamentos implements PagamentosInterface {
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -232,12 +281,12 @@ class Pagamentos implements PagamentosInterface {
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
-    
+
     public function obterTransacao(int $id): array
     {
         // Lógica para obter transação do banco de dados
@@ -245,9 +294,9 @@ class Pagamentos implements PagamentosInterface {
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -271,10 +320,10 @@ require_once '../utils/funcoes.php';
 /**
  * @author Pedro Stein Serer
  * (14/05/2025)
- * 
+ *
  * @version 1.0.1
  * @copyright Empresa Exemplo
- * 
+ *
  * Arquivo que define os métodos para a lógica de pagamentos.
  */
 
@@ -285,14 +334,14 @@ class WorkerPagamentos
 
     public function __construct ()
     {
-        $this->pagamentos = new Pagamentos; 
+        $this->pagamentos = new Pagamentos;
     }
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -300,27 +349,27 @@ class WorkerPagamentos
     {
         // Etapa 1: Criar a transação
         $transacao = $this->pagamentos->criarTransacao($dadosPagamento);
-        
+
         // Etapa 2: Aplicar descontos
         $transacao = $this->aplicarDesconto($transacao);
-        
+
         // Etapa 3: Calcular impostos
         $transacao = $this->calcularImposto($transacao);
-        
+
         // Etapa 4: Gerar fatura
         $fatura = $this->gerarFatura($transacao);
-        
+
         // Etapa 5: Marcar como pago
         $this->marcarComoPago($transacao, $fatura);
-        
+
         return $fatura; // Retorna a fatura gerada
     }
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -332,9 +381,9 @@ class WorkerPagamentos
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -346,9 +395,9 @@ class WorkerPagamentos
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -360,9 +409,9 @@ class WorkerPagamentos
 
     /**
      *Descrição da função.
-     * 
+     *
      * @param Descrição dos parâmetros
-     * 
+     *
      * @return descrição do retorno
      */
 
@@ -385,26 +434,26 @@ class WorkerPagamentos
     /**
      * @author Pedro Stein Serer
      * (14/05/2025)
-     * 
+     *
      * @version 1.0.1
      * @copyright Empresa Exemplo
-     * 
+     *
      * Arquivo com os métodos de processamento HTTP.
      */
 
-    class RotasPagamentos 
+    class RotasPagamentos
     {
         private PagamentosWorker $pagamentosWorker;
-    
+
         public function __construct() {
             $this->pagamentosWorker = new PagamentosWorker;
         }
 
         /**
          *Descrição da função.
-         * 
+         *
          * @param Descrição dos parâmetros
-         * 
+         *
          * @return descrição do retorno
          */
 
@@ -414,9 +463,9 @@ class WorkerPagamentos
 
         /**
          *Descrição da função.
-         * 
+         *
          * @param Descrição dos parâmetros
-         * 
+         *
          * @return descrição do retorno
          */
 
@@ -426,24 +475,24 @@ class WorkerPagamentos
 
         /**
          *Descrição da função.
-         * 
+         *
          * @param Descrição dos parâmetros
-         * 
+         *
          * @return descrição do retorno
          */
-    
+
         public function metodoPut(string &$resposta): void {
             // Lógica de processamento do método PUT
         }
 
         /**
          *Descrição da função.
-         * 
+         *
          * @param Descrição dos parâmetros
-         * 
+         *
          * @return descrição do retorno
          */
-    
+
         public function metodoDelete(string &$resposta): void {
             // Lógica de processamento do método DELETE
         }
@@ -462,10 +511,10 @@ class WorkerPagamentos
     /**
      * @author Pedro Stein Serer
      * (14/05/2025)
-     * 
+     *
      * @version 1.0.1
      * @copyright Empresa Exemplo
-     * 
+     *
      * Arquivo do Endpoint com as operações de pagamentos.
      */
 
@@ -497,7 +546,7 @@ class WorkerPagamentos
             // Método DELETE: Deleta uma fatura.
             $RotasPagamentos->metodoDelete($resposta);
             break;
-        
+
         default:
             $resposta = "Método não aceito pelo servidor";
             break;
