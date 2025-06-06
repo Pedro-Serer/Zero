@@ -117,38 +117,43 @@ O fluxo de dados funciona da seguinte forma: **CRUD → CONTRACTS → WORKERS �
 
 ## 🗃 Zero modular
 
-Zero consegue se adaptar a uma arquitetura modular: basta criar seus módulos ou domínios e aplicar o Zero em cada um deles. Com isso,
-além da facilidade e simplicidade que o Zero oferece no desenvolvimento do sistema, a arquitetura modular melhora a escalabilidade, a
-manutenibilidade e a reutilização — permitindo, por exemplo, que cada módulo se torne um microserviço, caso necessário.
+Outra grande habilidade da arquitetura Zero é ser modular, pois basta criar módulos (ou domínios) e aplicar o Zero dentro de 
+cada um deles. Isso é perfeito para sistemas grandes e complexos, porque além de organizar, separar as reponsabilidades, ela
+dá bastante flexibilidade e simplicidade de compreensão. Isso melhora a escalabilidade e uma futura manutenção. 
 
-<br>
+A Zero modular pode ser reutilizada em qualquer outra parte do projeto, permitindo também, que cada módulo se torne um microserviço, 
+se necessário.
 
-Outra vantagem que a arquitetura modular oferece é que desenvolvedores ou times de squads diferentes possam trabalhar paralelamente em
-módulos específicos de seu interesse, sem afetar o sistema como um todo e sem conflitos entre si.
-
-<br>
+A Zero modular, permite que desenvolvedores ou times de squads diferentes possam trabalhar paralelamente em
+módulos específicos de seu interesse, sem afetar o sistema como um todo e sem conflitos entre si, que é essencial para o desenvolvimento 
+moderno e em conjunto de modelos de IA.
 
 ```shell
 .
+
 (root)
-├── usuarios
-├──── assets
-├──── contracts
-├──── worker
-├──── utils
-├──── api
-├── pagamentos
-├──── assets
-├──── contracts
-├──── worker
-├──── utils
-├──── api
-├── relatorios
-├──── assets
-├──── contracts
-├──── worker
-├──── utils
-├──── api
+├── Usuarios/
+│   └── contracts/                     # Cria o CRUD das operações básicas de usuários
+│   └── worker/                        # Aplica as regras de gestão de usuários
+│   └── utils/                         # Utilitários exclusivos para a gestão de usuários
+│   └── api/                           # Faz chama dos recuros de Pagamentos e Relatórios
+│   └── receiver/                      # Recebe as solicitações de Pagamentos e Relatórios
+├── Pagamentos/
+│   └── contracts/                     # Cria o CRUD das operações básicas de pagamentos
+│   └── worker/                        # Implementação da regra de negócios para os pagamentos
+│   └── utils/                         # Utilitários exclusivos para o setor de pagamentos
+│   └── api/                           # Fornece os recursos de Pagamentos para o Usuário
+│   └── receiver/                      # Recebe chamadas de API e WebHook para alimentar o sistema
+├── Relatórios/
+│   └── contracts/                     # Cria o CRUD das operações básicas de relatórios
+│   └── worker/                        # Implementa os contratos para alimentar a API
+│   └── utils/                         # Utilitários exclusivos para montar os relatórios
+│   └── api/                           # Chamam os recursos para gerar relatórios
+├── Frontend/
+│   └── assets/                        # Arquivos e estilos para alimentar o front-end
+│   ├── usuários.html                  # Página de Usuários
+│   ├── pagamentos.html                # Página de Pagamentos
+├── app.html                           # Arquivo base do sistema
 
 ```
 
